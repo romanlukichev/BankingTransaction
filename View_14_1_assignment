@@ -1,0 +1,16 @@
+CREATE VIEW employee_vw
+(
+  supervisor_name,
+  employee_name
+)
+  AS
+  SELECT
+
+    CONCAT( emp_boss.fname , " " , emp_boss.lname ),
+    CONCAT( emp_sub.fname , " " , emp_sub.lname )
+    FROM employee emp_sub LEFT OUTER JOIN employee emp_boss
+  ON emp_sub.superior_emp_id = emp_boss.emp_id;
+
+SELECT * FROM employee_vw;
+
+DROP VIEW employee_vw;
