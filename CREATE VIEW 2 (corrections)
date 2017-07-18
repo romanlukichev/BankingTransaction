@@ -1,0 +1,35 @@
+CREATE VIEW branches_data_vw
+(
+   branch_name,
+   city,
+   total_ballance
+)
+  AS
+  SELECT br.name , br.city ,
+    (SELECT SUM(a.avail_balance) FROM account a WHERE br.branch_id = a.open_branch_id )
+FROM branch br
+ORDER BY br.name , br.city ;
+
+
+SELECT * FROM branches_data_vw;
+
+DROP VIEW branches_data_vw;
+
+===========================================================================================
+CREATE VIEW branches_data_vw
+(
+   branch_name,
+   city,
+   total_ballance
+)
+  AS
+    SELECT br.name , br.city , SUM(a.avail_balance)
+    FROM branch br INNER JOIN account a
+    ON br.branch_id = a.open_branch_id
+      
+ORDER BY br.name , br.city ;
+
+
+SELECT * FROM branches_data_vw;
+
+DROP VIEW branches_data_vw;
