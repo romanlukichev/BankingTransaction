@@ -1,0 +1,15 @@
+CREATE VIEW branches_data_vw
+(
+   branch_name,
+   city,
+   total_allance
+)
+  AS
+  SELECT br.name , br.city ,
+    (SELECT SUM(avail_balance) FROM account a WHERE br.branch_id = a.open_branch_id )
+FROM branch br;
+
+
+SELECT * FROM branches_data_vw;
+
+DROP VIEW branches_data_vw;
