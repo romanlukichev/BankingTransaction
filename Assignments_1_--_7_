@@ -1,0 +1,14 @@
+SELECT FirstName , LastName , HireDate FROM Employees
+WHERE Title = 'Sales Representative' AND Country = 'USA';
+
+SELECT FirstName , LastName , HireDate FROM Employees
+WHERE EmployeeID = 5 ;
+
+SELECT OrderID , OrderDate FROM Orders
+WHERE EmployeeID = 5;
+
+
+SELECT * FROM Suppliers;
+
+SELECT ProductID , ProductName FROM Products
+WHERE ProductName LIKE '%queso%' ;
