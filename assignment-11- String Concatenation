@@ -1,0 +1,3 @@
+SELECT FirstName , LastName ,
+  CONCAT(FirstName , ' ' , LastName) as FullName
+FROM Employees;
