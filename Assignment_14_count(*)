@@ -1,0 +1,3 @@
+SELECT COUNT(*) AS TotalCustomers FROM Customers;
+
+SELECT TotalCustomers = count(*) FROM Customers;
