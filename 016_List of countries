@@ -1,0 +1,9 @@
+SELECT *  FROM Customers;
+
+SELECT DISTINCT Country FROM Customers
+ORDER BY Country;
+
+SELECT Country FROM Customers
+GROUP BY Country;
+
+-- the same results
