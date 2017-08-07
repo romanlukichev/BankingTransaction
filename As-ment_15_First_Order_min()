@@ -1,0 +1,5 @@
+SELECT *  FROM Orders;
+
+SELECT convert(DATE , min(OrderDate)) AS FirsstOrder FROM Orders;
+
+SELECT min(OrderDate) AS FirsstOrder FROM Orders;
