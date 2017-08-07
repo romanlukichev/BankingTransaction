@@ -1,0 +1,13 @@
+SELECT *  FROM Customers;
+
+SELECT ContactTitle , COUNT(*) AS NunmerOfContactTitle
+FROM Customers
+GROUP BY  ContactTitle
+ORDER BY COUNT(*) DESC ;
+
+SELECT ContactTitle,
+  NunmerOfContactTitle = count(*)
+FROM Customers
+GROUP BY ContactTitle
+ORDER BY COUNT(*) DESC ;
+
