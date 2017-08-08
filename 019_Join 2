@@ -1,0 +1,5 @@
+SELECT OrderID , CONVERT( DATE , OrderDate ) , CompanyName    FROM Orders
+  INNER JOIN Shippers
+    ON Orders.ShipVia = Shippers.ShipperID
+  WHERE OrderID < 10300
+ORDER BY OrderID ;
