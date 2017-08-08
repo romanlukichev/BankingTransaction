@@ -1,0 +1,11 @@
+SELECT ProductID , ProductName , CompanyName , Products.SupplierID FROM Products
+  INNER JOIN Suppliers ON Products.SupplierID = Suppliers.SupplierID
+ORDER BY Products.SupplierID;
+
+SELECT
+  ProductID ,
+  ProductName ,
+  Supplier = CompanyName ,
+  Products.SupplierID FROM Products
+  INNER JOIN Suppliers ON Products.SupplierID = Suppliers.SupplierID
+ORDER BY Products.SupplierID;
