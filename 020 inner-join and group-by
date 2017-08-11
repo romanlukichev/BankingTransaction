@@ -1,0 +1,20 @@
+SELECT Categories.CategoryName  , COUNT(*) FROM Products
+  INNER JOIN Categories
+    ON Products.CategoryID = Categories.CategoryID
+
+GROUP BY Categories.CategoryName
+ORDER BY  COUNT(*) DESC;
+
+
+SELECT
+    Categories.CategoryName  ,
+    TotalProducts = COUNT(*)
+FROM Products
+  INNER JOIN Categories
+       ON Products.CategoryID = Categories.CategoryID
+
+GROUP BY Categories.CategoryName
+ORDER BY  COUNT(*) DESC;
+
+
+
