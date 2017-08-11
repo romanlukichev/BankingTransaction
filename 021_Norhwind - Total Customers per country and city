@@ -1,0 +1,14 @@
+SELECT City , COUNT(*) FROM Customers
+GROUP BY City
+ORDER BY COUNT(*);
+
+
+SELECT Country , COUNT(*) FROM Customers
+GROUP BY Country
+ORDER BY COUNT(*);
+
+
+SELECT Country , City , COUNT(*) FROM Customers
+GROUP BY Country , City
+ORDER BY COUNT(*) DESC ;
+
