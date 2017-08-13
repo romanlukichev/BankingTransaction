@@ -1,0 +1,7 @@
+SELECT  CustomerID , CompanyName , City ,  Country , Region ,
+  NullRegionFlag = CASE when Region IS NULL
+    THEN 1
+    ELSE 0
+  END
+FROM Customers
+ORDER BY NullRegionFlag  , Region ,  CustomerID;
