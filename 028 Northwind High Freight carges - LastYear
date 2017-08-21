@@ -1,0 +1,36 @@
+
+SELECT * FROM Orders
+ORDER BY OrderDate;
+
+/*==============================================================================================*/
+SELECT  ShipCountry , AverageFreight = AVG(Freight)
+FROM Orders
+GROUP BY ShipCountry;
+
+/*==============================================================================================*/
+SELECT * FROM Orders
+  WHERE OrderDate BETWEEN CURRENT_TIMESTAMP AND DATEADD(MONTH,12,CONVERT(DATE,CURRENT_TIMESTAMP))
+ORDER BY OrderDate;
+
+/*==============================================================================================*/
+SELECT * FROM Orders
+WHERE OrderDate = ( SELECT MAX(OrderDate) FROM Orders );
+
+/*==============================================================================================*/
+SELECT * FROM Orders
+  WHERE OrderDate >=
+  DATEADD( MONTH, -12, CONVERT( DATE,  (  SELECT MAX(OrderDate) FROM Orders )   ) )
+ORDER BY OrderDate;
+
+/*==============================================================================================*/
+SELECT DATEADD( MONTH, -12, CONVERT( DATE,  (  SELECT MAX(OrderDate) FROM Orders )   ) );
+/*==============================================================================================*/
+
+SELECT TOP 3
+  ShipCountry , AverageFreight = AVG(Freight)
+FROM Orders
+  WHERE OrderDate >=
+  DATEADD( MONTH, -12, CONVERT( DATE,  (  SELECT MAX(OrderDate) FROM Orders )   ) )
+  /*12 month later from the last OrderDate in DB*/
+GROUP BY ShipCountry
+ORDER BY AverageFreight DESC ;
