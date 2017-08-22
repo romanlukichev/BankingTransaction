@@ -1,0 +1,22 @@
+/*==================================================================================
+            Nothwind                       Inventory List 
+   =================================================================================*/
+   
+   
+   
+   SELECT Orders.EmployeeID , Employees.LastName , Orders.OrderID
+FROM Employees INNER JOIN Orders
+  ON Employees.EmployeeID = Orders.EmployeeID;
+
+
+
+SELECT Orders.EmployeeID , Employees.LastName , Orders.OrderID , Products.ProductName , [Order Details].Quantity
+FROM Employees INNER JOIN Orders
+  ON Employees.EmployeeID = Orders.EmployeeID
+INNER JOIN [Order Details]
+ON Orders.OrderID = [Order Details].OrderID
+INNER JOIN Products
+ON [Order Details].ProductID = Products.ProductID
+ORDER BY Orders.OrderID , Products.ProductID;
+   
+   
