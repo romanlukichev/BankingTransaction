@@ -1,0 +1,24 @@
+SELECT Customers.CustomerID , CompanyName , ContactName , Orders.OrderID , OrderDate , ShipCountry , ShipCity
+FROM Customers FULL JOIN Orders
+ON Customers.CustomerID = Orders.CustomerID
+WHERE Orders.OrderID IS NULL ;
+
+SELECT Customers.CustomerID , Orders.OrderID
+FROM Customers FULL JOIN Orders
+ON Customers.CustomerID = Orders.CustomerID;
+
+
+SELECT Customers.CustomerID , Orders.OrderID
+FROM Customers LEFT OUTER JOIN Orders
+ON Customers.CustomerID = Orders.CustomerID
+WHERE Orders.OrderID IS NULL ;
+
+SELECT
+  Customers_CustomerID = Customers.CustomerID ,
+  Orders_OrderID = Orders.OrderID
+FROM Customers
+FULL JOIN Orders
+  ON Customers.CustomerID = Orders.CustomerID;
+
+SELECT CustomerID FROM Customers
+WHERE CustomerID NOT IN (SELECT CustomerID FROM Orders);
