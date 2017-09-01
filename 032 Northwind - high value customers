@@ -1,0 +1,39 @@
+-- see page 49
+-- We want to send all of our high-value customers a special gift
+-- To all who made at least one order equal to 10.000 or more
+-- We consider all orders made in 2016 year.
+
+SELECT Orders.CustomerID , Customers.CompanyName , Orders.OrderID , Orders.Freight , Orders.OrderDate
+FROM Orders INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID AND YEAR(OrderDate)=1998
+AND Orders.Freight >= 10.000;
+-- straightforward but wrong answer.
+
+SELECT Customers.CustomerID , Customers.CompanyName , Orders.OrderID , [Order Details].Quantity , [Order Details].UnitPrice
+FROM Customers INNER JOIN Orders
+    ON Customers.CustomerID = Orders.CustomerID
+INNER JOIN [Order Details]
+  ON Orders.OrderID = [Order Details].OrderID
+-- used hint number one
+
+
+SELECT Customers.CustomerID , Customers.CompanyName , Orders.OrderID ,
+  Ammount= ( [Order Details].Quantity * [Order Details].UnitPrice )
+FROM Customers INNER JOIN Orders
+    ON Customers.CustomerID = Orders.CustomerID
+INNER JOIN [Order Details]
+  ON Orders.OrderID = [Order Details].OrderID
+WHERE YEAR(OrderDate) = 1998;
+-- corrected the previous query and added filter condition
+
+
+SELECT Customers.CustomerID , Customers.CompanyName , Orders.OrderID ,
+TotalAmmount = SUM(  [Order Details].Quantity * [Order Details].UnitPrice     )
+FROM Customers INNER JOIN Orders
+    ON Customers.CustomerID = Orders.CustomerID
+INNER JOIN [Order Details]
+  ON Orders.OrderID = [Order Details].OrderID
+WHERE YEAR(OrderDate) = 1996
+GROUP BY Customers.CustomerID , Customers.CompanyName , Orders.OrderID
+HAVING SUM(  [Order Details].Quantity * [Order Details].UnitPrice     ) >= 10.000
+ORDER BY TotalAmmount DESC ;
+-- correct query. Actualli I could not figure out this challenge and looked the answer at the end of the book.
