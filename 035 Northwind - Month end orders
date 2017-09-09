@@ -1,0 +1,15 @@
+SELECT Orders.EmployeeID , Orders.OrderID , Orders.OrderDate FROM Orders;
+
+
+SELECT Orders.EmployeeID , Orders.OrderID , Orders.OrderDate FROM Orders
+WHERE DAY(Orders.OrderDate) IN (28,29,30,31);
+-- my solution
+
+SELECT Orders.EmployeeID , Orders.OrderID , Orders.OrderDate FROM Orders
+WHERE DAY(Orders.OrderDate) IN (28,29,30,31)
+ORDER BY Orders.EmployeeID , Orders.OrderID ;
+
+SELECT Orders.EmployeeID , Orders.OrderID , Orders.OrderDate FROM Orders
+WHERE  Orders.OrderDate = EOMONTH(Orders.OrderDate)
+ORDER BY Orders.EmployeeID , Orders.OrderID ;
+-- solution from a book
