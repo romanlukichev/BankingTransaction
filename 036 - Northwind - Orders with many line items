@@ -1,0 +1,17 @@
+SELECT OrderID FROM Orders
+
+SELECT OrderID , Quantity FROM [Order Details]
+ORDER BY OrderID DESC , Quantity DESC ;
+
+SELECT OrderID , COUNT(*) FROM [Order Details]
+GROUP BY OrderID
+ORDER BY COUNT(*) DESC ;
+
+SELECT TOP 10 OrderID , TotalOrderedDetails = COUNT(*) FROM [Order Details]
+GROUP BY OrderID
+ORDER BY COUNT(*) DESC , OrderID DESC ;
+
+
+SELECT TOP 10 WITH TIES OrderID , TotalOrderedDetails = COUNT(*) FROM [Order Details]
+GROUP BY OrderID
+ORDER BY COUNT(*) DESC ;   --  WITH TIES means that all group with TotalOrderedDetails = 5 will be included in the search result
