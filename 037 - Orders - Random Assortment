@@ -1,0 +1,23 @@
+SELECT TOP 10 OrderID FROM Orders
+ORDER BY NEWID();
+
+
+SELECT CEILING(COUNT(OrderID)*0.02) FROM Orders;
+-- returns 17
+
+SELECT TOP
+  ( SELECT NUM = CEILING(COUNT(OrderID)*0.02) FROM Orders )
+  OrderID FROM Orders
+ORDER BY NEWID(); --does not work
+
+SELECT TOP
+  17
+  OrderID FROM Orders
+ORDER BY NEWID();
+
+SELECT TOP
+  2 PERCENT
+  OrderID FROM Orders
+ORDER BY NEWID();
+-- NEWID() function creates globally unique inentifier GUID.
+-- When you order by this identifier , you get random sorting
