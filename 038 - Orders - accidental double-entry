@@ -1,0 +1,69 @@
+SELECT * FROM Orders;
+
+SELECT Employees.FirstName , Employees.LastName ,  Orders.OrderID , OrderDetails.Quantity
+FROM OrderDetails
+INNER JOIN Orders ON OrderDetails.OrderID = Orders.OrderID
+INNER JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+WHERE Employees.FirstName = 'Janet' AND Employees.LastName = 'Leverling'
+AND OrderDetails.Quantity >= 60
+ORDER BY  Orders.OrderID DESC ;
+-- this is query 1
+
+
+
+SELECT  Orders.OrderID , NumberOfOrders = COUNT( Orders.OrderID )
+FROM OrderDetails
+INNER JOIN Orders ON OrderDetails.OrderID = Orders.OrderID
+INNER JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+WHERE Employees.FirstName = 'Janet' AND Employees.LastName = 'Leverling'
+AND OrderDetails.Quantity >= 60
+GROUP BY Orders.OrderID
+HAVING COUNT( Orders.OrderID ) >= 2;
+-- this is query 2
+
+-- so we will set query 2 into query 1 as a subquery.
+
+
+SELECT Employees.FirstName , Employees.LastName ,  Orders.OrderID , OrderDetails.Quantity
+FROM OrderDetails
+INNER JOIN Orders ON OrderDetails.OrderID = Orders.OrderID
+INNER JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+WHERE Employees.FirstName = 'Janet' AND Employees.LastName = 'Leverling'
+AND OrderDetails.Quantity >= 60 AND  Orders.OrderID IN
+(
+SELECT  Orders.OrderID
+FROM OrderDetails
+INNER JOIN Orders ON OrderDetails.OrderID = Orders.OrderID
+INNER JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+WHERE Employees.FirstName = 'Janet' AND Employees.LastName = 'Leverling'
+AND OrderDetails.Quantity >= 60
+GROUP BY Orders.OrderID
+HAVING COUNT( Orders.OrderID ) >= 2
+)
+ORDER BY  Orders.OrderID DESC ;
+
+
+--============================================================================
+
+SELECT Employees.FirstName , Employees.LastName ,  Orders.OrderID , OrderDetails.Quantity
+FROM OrderDetails
+INNER JOIN Orders ON OrderDetails.OrderID = Orders.OrderID
+INNER JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+WHERE  Orders.OrderID IN
+(
+ 10263 , 10658 , 10990 , 11030
+)
+ORDER BY  Orders.OrderID DESC
+
+
+--======================================================
+
+SELECT  Orders.OrderID , NumberOfOrders = COUNT( Orders.OrderID )
+FROM OrderDetails
+INNER JOIN Orders ON OrderDetails.OrderID = Orders.OrderID
+INNER JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+
+AND OrderDetails.Quantity >= 60
+GROUP BY Orders.OrderID , OrderDetails.Quantity
+HAVING COUNT( * ) >= 2;
+-- this is the correct answer, I looked up at the end of the book.
