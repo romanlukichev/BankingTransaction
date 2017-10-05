@@ -1,0 +1,86 @@
+USE Northwind
+GO
+
+
+;WITH OrederIDs AS
+(
+    SELECT  Orders.OrderID , NumberOfOrders = COUNT( Orders.OrderID )
+FROM OrderDetails
+INNER JOIN Orders ON OrderDetails.OrderID = Orders.OrderID
+INNER JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+
+AND OrderDetails.Quantity >= 60
+GROUP BY Orders.OrderID , OrderDetails.Quantity
+HAVING COUNT( * ) >= 2
+)
+SELECT Orders.OrderID , OrderDetails.ProductID , OrderDetails.UnitPrice , OrderDetails.Quantity , OrderDetails.Discount
+FROM Orders INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
+
+WHERE  Orders.OrderID IN
+       (
+         SELECT Orders.OrderID FROM OrederIDs
+       )
+-- something is wrong here
+--==============================================================================================================================
+;WITH OrederIDsList AS
+(
+SELECT  OrderDetails.OrderID , NumberOfOrders = COUNT( OrderDetails.OrderID )
+FROM OrderDetails
+
+WHERE OrderDetails.Quantity >= 60
+GROUP BY OrderDetails.OrderID , OrderDetails.Quantity
+HAVING COUNT( * ) > 1
+)
+SELECT OrderDetails.OrderID , OrderDetails.ProductID , OrderDetails.UnitPrice , OrderDetails.Quantity , OrderDetails.Discount
+
+FROM OrderDetails
+
+WHERE  OrderDetails.OrderID IN
+       (
+         SELECT OrderDetails.OrderID FROM OrederIDsList
+       )
+ORDER BY OrderDetails.OrderID , OrderDetails.Quantity ;
+
+-- 10263 , 10263 , 10990 , 10658 , 11030
+--==============================================================================================================================
+SELECT OrderDetails.OrderID , OrderDetails.ProductID , OrderDetails.UnitPrice , OrderDetails.Quantity , OrderDetails.Discount
+
+FROM OrderDetails
+
+WHERE  OrderDetails.OrderID IN
+       (
+         10263 , 10263 , 10990 , 10658 , 11030
+       )
+ORDER BY OrderDetails.OrderID , OrderDetails.Quantity ;
+
+--==============================================================================================================================
+SELECT OrderDetails.OrderID , OrderDetails.ProductID , OrderDetails.UnitPrice , OrderDetails.Quantity , OrderDetails.Discount
+
+FROM OrderDetails
+
+WHERE  OrderDetails.OrderID IN
+       (
+         11030
+       )
+ORDER BY OrderDetails.OrderID , OrderDetails.Quantity ;
+
+--=================================================================================================================================
+;WITH OrederIDsList AS
+(
+SELECT  OrderID , NumberOfOrders = COUNT( OrderID )
+FROM OrderDetails
+
+WHERE Quantity >= 60
+GROUP BY OrderID , Quantity
+HAVING COUNT( * ) > 1
+)
+SELECT OrderID ,ProductID , UnitPrice , Quantity , Discount
+
+FROM OrderDetails
+
+WHERE  OrderID IN
+       (
+         SELECT OrderID FROM OrederIDsList
+       )
+ORDER BY OrderID , Quantity ;
+-- Works correct
