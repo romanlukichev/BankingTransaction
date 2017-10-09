@@ -1,0 +1,11 @@
+SELECT OrderID , OrderDate , RequiredDate , ShippedDate FROM Orders
+WHERE RequiredDate < Orders.ShippedDate
+ORDER BY OrderID;
+
+SELECT OrderID , OrderDate , RequiredDate=CONVERT(DATE,RequiredDate) , ShippedDate=CONVERT(DATE,ShippedDate) FROM Orders
+WHERE CONVERT(DATE,RequiredDate) <= CONVERT(DATE,ShippedDate)
+ORDER BY OrderID;
+
+
+
+
