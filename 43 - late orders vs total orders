@@ -1,0 +1,64 @@
+SELECT Orders.EmployeeID , Employees.LastName , AllOrders , LateOrders FROM Orders INNER JOIN Employees
+ON Orders.EmployeeID = Employees.EmployeeID;
+
+SELECT Orders.EmployeeID , Employees.LastName  FROM Orders INNER JOIN Employees
+ON Orders.EmployeeID = Employees.EmployeeID
+;
+
+SELECT Orders.EmployeeID   FROM Orders
+GROUP BY Orders.EmployeeID;
+--============================================AllOrders ,==================================================================================
+
+;WITH AllOrders AS
+(    SELECT EmployeeID , TotalNumberOfOrders = COUNT(OrderID) FROM Orders
+    GROUP BY EmployeeID -- total orders subquery
+)
+,
+WITH LateOrders AS
+(
+    WITH LateOrdersPreQery AS
+        ( SELECT OrderID, EmployeeID, OrderDate, RequiredDate= CONVERT ( DATE, RequiredDate), ShippedDate= CONVERT ( DATE, ShippedDate) FROM Orders
+        WHERE CONVERT ( DATE, RequiredDate) <= CONVERT ( DATE, ShippedDate)
+        -- late orders subquery
+        )
+    SELECT EmployeeID, NumberOfLateOrders = COUNT (OrderID) FROM LateOrdersPreQery
+    GROUP BY EmployeeID
+)
+SELECT Orders.EmployeeID , Employees.LastName , AllOrders.TotalNumberOfOrders , LateOrders.NumberOfLateOrders  FROM Orders INNER JOIN Employees
+ON Orders.EmployeeID = Employees.EmployeeID
+INNER JOIN AllOrders
+    ON AllOrders.EmployeeID = Employees.EmployeeID
+INNER JOIN LateOrders ON LateOrders.EmployeeID = Employees.EmployeeID
+;
+-- Something wrong in this query
+
+-- total orders subquery
+SELECT EmployeeID , NumberOfOrders = COUNT(OrderID) FROM Orders
+GROUP BY EmployeeID;
+
+
+-- late orders subquery
+SELECT OrderID , OrderDate , RequiredDate=CONVERT(DATE,RequiredDate) , ShippedDate=CONVERT(DATE,ShippedDate) FROM Orders
+WHERE CONVERT(DATE,RequiredDate) <= CONVERT(DATE,ShippedDate)
+ORDER BY OrderID;
+
+
+--==================================================================================================================================
+;WITH LateOrders AS
+(
+   SELECT   EmployeeID , NumberOfLateOrders = COUNT (*)
+     FROM Orders
+        WHERE CONVERT ( DATE, RequiredDate) <= CONVERT ( DATE, ShippedDate)
+       GROUP BY EmployeeID -- late orders subquery
+) ,
+AllOrders AS
+(    SELECT EmployeeID , TotalNumberOfOrders = COUNT(OrderID) FROM Orders
+    GROUP BY EmployeeID -- total orders subquery
+)
+SELECT Employees.EmployeeID , Employees.LastName , AllOrders.TotalNumberOfOrders , LateOrders.NumberOfLateOrders
+FROM  Employees
+INNER JOIN AllOrders
+    ON AllOrders.EmployeeID = Employees.EmployeeID
+INNER JOIN LateOrders ON LateOrders.EmployeeID = Employees.EmployeeID
+;
+-- correct query - I looked at the end of the book
