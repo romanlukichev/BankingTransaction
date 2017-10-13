@@ -1,0 +1,17 @@
+;WITH LateOrders AS
+(
+   SELECT   EmployeeID , NumberOfLateOrders = COUNT (*)
+     FROM Orders
+        WHERE CONVERT ( DATE, RequiredDate) <= CONVERT ( DATE, ShippedDate)
+       GROUP BY EmployeeID -- late orders subquery
+) ,
+AllOrders AS
+(    SELECT EmployeeID , TotalNumberOfOrders = COUNT(OrderID) FROM Orders
+    GROUP BY EmployeeID -- total orders subquery
+)
+SELECT Employees.EmployeeID , Employees.LastName , AllOrders.TotalNumberOfOrders , LateOrders.NumberOfLateOrders
+FROM  Employees
+LEFT OUTER JOIN AllOrders
+    ON AllOrders.EmployeeID = Employees.EmployeeID
+LEFT OUTER JOIN LateOrders ON LateOrders.EmployeeID = Employees.EmployeeID
+ORDER BY Employees.EmployeeID;
