@@ -1,0 +1,80 @@
+-- Categorize customers into groups, based on how much they ordered in 1996
+--
+--==============================================================================================
+--  SELECT 'Small Clients' Category , 0 low_limit , 1000 high_limit
+-- UNION ALL
+--    SELECT 'Medium Clients'  Category  , 1000 low_limit , 5000 high_limit
+-- UNION ALL
+--    SELECT 'Big Clients'  Category  , 5000 low_limit , 10000 high_limit
+--
+--==============================================================================================
+
+
+SELECT Customers.CustomerID , Customers.CompanyName , --  Orders.OrderID ,
+TotalAmmount = SUM(  [Order Details].Quantity * [Order Details].UnitPrice     )
+FROM Customers INNER JOIN Orders
+    ON Customers.CustomerID = Orders.CustomerID
+INNER JOIN [Order Details]
+  ON Orders.OrderID = [Order Details].OrderID
+WHERE YEAR(OrderDate) = 1996
+GROUP BY Customers.CustomerID , Customers.CompanyName -- , Orders.OrderID
+HAVING SUM(  [Order Details].Quantity * [Order Details].UnitPrice     ) >= 1000.000
+ORDER BY TotalAmmount DESC ;
+-- =================     Starting point for our queries     =================================
+-- now we count not customers who had at least one or more individual orders totaling $10.000
+-- we count those who have many orders totaling $10000.000
+-- SO we commented out some code
+
+
+SELECT groups.Category , COUNT(*) Num_Customers
+  FROM
+(
+    SELECT
+      Customers.CustomerID,
+      Customers.CompanyName,
+      --  Orders.OrderID ,
+        TotalAmmount = SUM([Order Details].Quantity * [Order Details].UnitPrice)
+    FROM Customers
+      INNER JOIN Orders
+        ON Customers.CustomerID = Orders.CustomerID
+      INNER JOIN [Order Details]
+        ON Orders.OrderID = [Order Details].OrderID
+    WHERE YEAR(OrderDate) = 1996
+    GROUP BY Customers.CustomerID, Customers.CompanyName -- , Orders.OrderID
+)  TotalAmmountsTable
+  INNER JOIN
+(
+  SELECT 'Small Clients' Category , 0 low_limit , 1000 high_limit
+UNION ALL
+    SELECT 'Medium Clients'  Category  , 1000 low_limit , 5000 high_limit
+UNION ALL
+    SELECT 'Big Clients'  Category  , 5000 low_limit , 10000 high_limit
+) groups
+ON TotalAmmountsTable.TotalAmmount
+BETWEEN groups.low_limit AND groups.high_limit
+GROUP BY groups.Category;
+-- Used Data fabrication technik from my book
+
+
+;WITH Orders1996 AS
+(
+SELECT Customers.CustomerID , Customers.CompanyName , --  Orders.OrderID ,
+TotalAmmount = SUM(  [Order Details].Quantity * [Order Details].UnitPrice     )
+FROM Customers INNER JOIN Orders
+    ON Customers.CustomerID = Orders.CustomerID
+INNER JOIN [Order Details]
+  ON Orders.OrderID = [Order Details].OrderID
+WHERE YEAR(OrderDate) = 1996
+GROUP BY Customers.CustomerID , Customers.CompanyName -- , Orders.OrderID
+--HAVING SUM(  [Order Details].Quantity * [Order Details].UnitPrice     ) >= 1000.000
+--ORDER BY TotalAmmount DESC  // we do not need these two strings inside a wiew or a subquery
+)
+SELECT CustomerID , CompanyName , TotalAmmount ,
+  CustomerGroup = CASE
+    WHEN TotalAmmount BETWEEN 0 AND 1000 THEN  '01 Small Client'
+    WHEN TotalAmmount BETWEEN 1001 AND 5000 THEN  '02 Medium Client'
+    WHEN TotalAmmount BETWEEN 5001 AND 10000 THEN  '03 Big Client'
+    WHEN TotalAmmount > 10001 THEN  '04 VERY BIG CLIENT'
+    END
+FROM  Orders1996
+ORDER BY CustomerGroup , CustomerID ;
