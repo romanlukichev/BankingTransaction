@@ -1,0 +1,24 @@
+;WITH Orders2016 AS
+(
+SELECT Customers.CustomerID , Customers.CompanyName , --  Orders.OrderID ,
+TotalOrderAmmount = SUM( OrderDetails.Quantity * OrderDetails.UnitPrice     )
+FROM Customers INNER JOIN Orders
+    ON Customers.CustomerID = Orders.CustomerID
+INNER JOIN OrderDetails
+  ON Orders.OrderID = OrderDetails.OrderID
+WHERE  OrderDate  >= '20160101'
+       AND
+       OrderDate < '20170101'
+GROUP BY Customers.CustomerID , Customers.CompanyName -- , Orders.OrderID
+--HAVING SUM(  [Order Details].Quantity * [Order Details].UnitPrice     ) >= 1000.000
+--ORDER BY TotalAmmount DESC  // we do not need these two strings inside a wiew or a subquery
+)
+SELECT CustomerID , CompanyName , TotalOrderAmmount ,
+  CustomerGroup = CASE
+    WHEN  TotalOrderAmmount >= 0  AND  TotalOrderAmmount < 1000  THEN  '01 Small Client'
+    WHEN  TotalOrderAmmount >= 1000  AND   TotalOrderAmmount <  5000  THEN  '02 Medium Client'
+    WHEN  TotalOrderAmmount >= 5000  AND   TotalOrderAmmount < 10000  THEN  '03 Big Client'
+    WHEN  TotalOrderAmmount >= 10000  THEN  '04 VERY BIG CLIENT'
+    END
+FROM  Orders2016
+ORDER BY CustomerGroup , CustomerID ;
