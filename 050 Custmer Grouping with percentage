@@ -1,0 +1,48 @@
+=========================================================================================================================
+                   Based on the  previous query, show all defined Customer groups and the percentage in each
+                   Sort by total in each group, in descendin order
+=========================================================================================================================
+
+
+use Northwind;
+;WITH Orders2016 AS
+(
+SELECT Customers.CustomerID , Customers.CompanyName , --  Orders.OrderID ,
+TotalOrderAmmount = SUM( OrderDetails.Quantity * OrderDetails.UnitPrice     )
+FROM Customers INNER JOIN Orders
+    ON Customers.CustomerID = Orders.CustomerID
+INNER JOIN OrderDetails
+  ON Orders.OrderID = OrderDetails.OrderID
+WHERE  OrderDate  >= '20160101'
+       AND
+       OrderDate < '20170101'
+GROUP BY 
+Customers.CustomerID , 
+Customers.CompanyName
+)
+, CustomerGrouping AS( -- we will create another CTE level 
+      SELECT
+	   CustomerID ,
+	   CompanyName ,
+	   TotalOrderAmmount ,
+	   CustomerGroup = 
+	    CASE
+    WHEN  TotalOrderAmmount >= 0  AND  TotalOrderAmmount < 1000  THEN  '01 Small Client'
+    WHEN  TotalOrderAmmount >= 1000  AND   TotalOrderAmmount <  5000  THEN  '02 Medium Client'
+    WHEN  TotalOrderAmmount >= 5000  AND   TotalOrderAmmount < 10000  THEN  '03 Big Client'
+    WHEN  TotalOrderAmmount >= 10000  THEN  '04 VERY BIG CLIENT'
+    END
+FROM  Orders2016
+)
+SELECT
+   CustomerGroup , 
+   TotalInGroup = COUNT(*) ,  --COUNT(*)  --* 1.0 /
+   -- we count how many customers are in each CustomerGroup 
+   -- ( the groups are: 01 Small Client, 02 Medium Client, 03 Big Client, 04 VERY BIG CLIENT )
+   -- COUNT(*)  * 1.0 - multiplied by 1.0 to convert it into a float value
+   PecentageInGroup = COUNT(*)  * 1.0 / (SELECT COUNT(*) FROM CustomerGrouping )
+   -- (SELECT COUNT(*) FROM CustomerGrouping ) - will always show show the number of rows in CustomerGrouping CTE it's equals to 81
+FROM CustomerGrouping  --
+GROUP BY 
+        CustomerGroup 
+		ORDER BY TotalInGroup DESC;
